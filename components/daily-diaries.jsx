@@ -94,8 +94,9 @@ export default function DailyDiariesPage() {
             <CalendarDays className="h-5 w-5 text-gray-700" />
             {selectedDay === "all" ? "All Days" : `Day ${selectedDay}`}
             <ChevronDown
-              className={`h-4 w-4 transition-transform ${dropdownOpen ? "rotate-180" : ""
-                }`}
+              className={`h-4 w-4 transition-transform ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
             />
           </button>
 
@@ -107,10 +108,11 @@ export default function DailyDiariesPage() {
                     setSelectedDay("all");
                     setDropdownOpen(false);
                   }}
-                  className={`block w-full text-left px-4 py-2 text-sm ${selectedDay === "all"
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                  className={`block w-full text-left px-4 py-2 text-sm ${
+                    selectedDay === "all"
+                      ? "bg-blue-50 text-blue-700"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
                 >
                   All Days
                 </button>
@@ -122,13 +124,15 @@ export default function DailyDiariesPage() {
                       setDropdownOpen(false);
                     }}
                     disabled={!uniqueDays.includes(day)}
-                    className={`block w-full text-left px-4 py-2 text-sm ${selectedDay === day
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-gray-700 hover:bg-gray-100"
-                      } ${!uniqueDays.includes(day)
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      selectedDay === day
+                        ? "bg-blue-50 text-blue-700"
+                        : "text-gray-700 hover:bg-gray-100"
+                    } ${
+                      !uniqueDays.includes(day)
                         ? "opacity-50 cursor-not-allowed"
                         : ""
-                      }`}
+                    }`}
                   >
                     Day {day}
                   </button>
@@ -180,7 +184,7 @@ export default function DailyDiariesPage() {
               <div className="mt-4 pt-4 border-t border-gray-100 flex gap-4">
                 {entry.media && (
                   <a
-                    href={`/uploads/${entry.media}`}
+                    href={entry.media}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
@@ -191,7 +195,7 @@ export default function DailyDiariesPage() {
                 )}
                 {entry.reportPdf && (
                   <a
-                    href={`/uploads/${entry.reportPdf}`}
+                    href={entry.reportPdf}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
