@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const { name, crn, urn, email, profilePic } = req.body;
+      const { name, crn, urn, email } = req.body;
 
       if (
         !name ||
@@ -43,9 +43,6 @@ export default async function handler(req, res) {
       }
 
       const updateFields = { name, crn, urn, email };
-      if (profilePic && typeof profilePic === "string") {
-        updateFields.profilePic = profilePic;
-      }
 
       const user = await User.findOneAndUpdate({ _id: userId }, updateFields, {
         new: true,

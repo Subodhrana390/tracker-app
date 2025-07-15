@@ -7,6 +7,7 @@ const projectSchema = new mongoose.Schema(
     description: { type: String },
     link: { type: String },
     reportPath: { type: String },
+    reportPublicId: { type: String },
   },
   { timestamps: true }
 );

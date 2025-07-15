@@ -1,8 +1,8 @@
 import connectDB from "@/lib/mongodb";
 import Diary from "@/models/Diary";
-import path from "path";
 import jwt from "jsonwebtoken";
 import { IncomingForm } from "formidable";
+import cloudinary from "@/lib/cloudinary";
 
 export const config = {
   api: {
@@ -14,8 +14,6 @@ const parseForm = (req) =>
   new Promise((resolve, reject) => {
     const form = new IncomingForm({
       keepExtensions: true,
-      uploadDir: path.join(process.cwd(), "public", "uploads"),
-      filename: (name, ext, part) => `${Date.now()}-${part.originalFilename}`,
     });
 
     form.parse(req, (err, fields, files) => {
@@ -51,31 +49,33 @@ export default async function handler(req, res) {
     const mood = Array.isArray(fields.mood) ? fields.mood[0] : fields.mood;
     const dayRaw = Array.isArray(fields.day) ? fields.day[0] : fields.day;
     const day = Number(dayRaw);
+
     if (isNaN(day)) {
       return res.status(400).json({ error: "Invalid day number" });
     }
 
-    let mediaPath = null;
+    let mediaUrl = null;
     const mediaFile = files.media;
     if (mediaFile) {
       const file = Array.isArray(mediaFile) ? mediaFile[0] : mediaFile;
-      mediaPath = path.relative(
-        path.join(process.cwd(), "public"),
-        file.filepath || file.path
-      );
+      const uploadResult = await cloudinary.uploader.upload(file.filepath, {
+        folder: "tracker/media",
+        resource_type: "auto",
+      });
+      mediaUrl = uploadResult.secure_url;
     }
 
-    let reportPdfPath = null;
+    let reportPdfUrl = null;
     const reportFile = files.report;
     if (reportFile) {
       const file = Array.isArray(reportFile) ? reportFile[0] : reportFile;
-      reportPdfPath = path.relative(
-        path.join(process.cwd(), "public"),
-        file.filepath || file.path
-      );
+      const uploadResult = await cloudinary.uploader.upload(file.filepath, {
+        folder: "tracker/reports",
+        resource_type: "auto",
+      });
+      reportPdfUrl = uploadResult.secure_url;
     }
 
-    // Build update object
     const updateData = {
       title,
       description,
@@ -84,8 +84,8 @@ export default async function handler(req, res) {
       userId,
     };
 
-    if (mediaPath) updateData.media = mediaPath;
-    if (reportPdfPath) updateData.reportPdf = reportPdfPath;
+    if (mediaUrl) updateData.media = mediaUrl;
+    if (reportPdfUrl) updateData.reportPdf = reportPdfUrl;
 
     const updatedEntry = await Diary.findOneAndUpdate(
       { userId, day },

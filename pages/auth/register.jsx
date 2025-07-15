@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import InputField from "@/components/ui/InputField";
 import { toast } from "sonner";
+import axios from "axios";
 
 const Page = () => {
   const router = useRouter();
@@ -52,7 +53,6 @@ const Page = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file && file.size > 2 * 1024 * 1024) {
-      // 2MB limit
       setErrors((prev) => ({
         ...prev,
         profilePic: "Image must be less than 2MB",
@@ -110,21 +110,19 @@ const Page = () => {
       formPayload.append("password", formData.password);
       if (profilePic) formPayload.append("profilePic", profilePic);
 
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        body: formPayload,
+      const { data } = await axios.post("/api/auth/register", formPayload, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
 
       toast.success("Registration successful! Redirecting to login...");
       setTimeout(() => router.push("/auth/login"), 1500);
     } catch (error) {
-      toast.error(error.message || "An error occurred during registration");
+      const message =
+        error.response?.data?.message ||
+        "An error occurred during registration";
+      toast.error(message);
       console.error("Registration error:", error);
     } finally {
       setLoading(false);

@@ -1,9 +1,8 @@
 import formidable from "formidable";
 import path from "path";
-import fs from "fs";
-import bcrypt from "bcryptjs";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
+import cloudinary from "@/lib/cloudinary";
 
 export const config = {
   api: {
@@ -18,7 +17,6 @@ const parseForm = (req) =>
   new Promise((resolve, reject) => {
     const form = formidable({
       multiples: false,
-      uploadDir: path.join(process.cwd(), "/public/uploads"),
       keepExtensions: true,
     });
 
@@ -58,12 +56,19 @@ export default async function handler(req, res) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Handle profile picture
-    const profilePic = files.profilePic;
+    let profilePicUrl = "";
 
-    const profilePicPath = profilePic?.filepath
-      ? `/uploads/${path.basename(profilePic.filepath)}`
-      : "";
+    // Upload to Cloudinary
+    const profilePic = files.profilePic?.[0];
+    if (profilePic && profilePic.filepath) {
+      const result = await cloudinary.uploader.upload(profilePic.filepath, {
+        folder: "tracker",
+        public_id: `${Date.now()}_${
+          path.parse(profilePic.originalFilename).name
+        }`,
+      });
+      profilePicUrl = result.secure_url;
+    }
 
     // Create and save user
     const newUser = new User({
@@ -72,7 +77,7 @@ export default async function handler(req, res) {
       crn,
       urn,
       password: hashedPassword,
-      profilePic: profilePicPath,
+      profilePic: profilePicUrl,
     });
 
     await newUser.save();

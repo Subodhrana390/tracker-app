@@ -89,9 +89,6 @@ function CertificateSection() {
   };
 
   const uploadCertificate = async (file) => {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("Not authenticated");
-
     const formData = new FormData();
     formData.append("certificate", file);
 

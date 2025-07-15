@@ -1,9 +1,8 @@
 import formidable from "formidable";
-import fs from "fs";
-import path from "path";
 import connectDB from "@/lib/mongodb";
 import FinalReport from "@/models/FinalReport";
 import jwt from "jsonwebtoken";
+import cloudinary from "@/lib/cloudinary";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -12,6 +11,13 @@ export const config = {
     bodyParser: false,
   },
 };
+
+async function uploadToCloudinary(file) {
+  return cloudinary.uploader.upload(file.filepath || file.path, {
+    resource_type: "raw",
+    folder: "tracker/final-reports",
+  });
+}
 
 export default async function handler(req, res) {
   const token = req.cookies.token;
@@ -35,7 +41,6 @@ export default async function handler(req, res) {
         userId: decoded.id,
       }).sort({ createdAt: -1 });
 
-      console.log("Fetched reports:", reports);
       return res.status(200).json(reports);
     } catch (error) {
       return res.status(500).json({ error: "Failed to fetch reports" });
@@ -43,20 +48,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === "POST") {
-    const uploadDir = path.join(
-      process.cwd(),
-      "public",
-      "uploads",
-      "final-reports"
-    );
-    fs.mkdirSync(uploadDir, { recursive: true });
-
-    const form = formidable({
-      uploadDir,
-      keepExtensions: true,
-      maxFileSize: 10 * 1024 * 1024, // 10 MB
-      multiples: false,
-    });
+    const form = formidable({ multiples: false });
 
     form.parse(req, async (err, fields, files) => {
       if (err) {
@@ -64,31 +56,44 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: "Error processing file" });
       }
 
-      const title = fields.title?.[0] || fields.title;
-      const description = fields.description?.[0] || "";
-      const file = files.report[0];
+      const title = Array.isArray(fields.title)
+        ? fields.title[0]
+        : fields.title;
+      const description = Array.isArray(fields.description)
+        ? fields.description[0]
+        : fields.description || "";
+      const file = files.report
+        ? Array.isArray(files.report)
+          ? files.report[0]
+          : files.report
+        : null;
 
       if (!title || !file) {
         return res.status(400).json({ error: "Missing title or report file" });
       }
 
-      const fileName = path.basename(file.filepath);
-      const filePath = `/uploads/final-reports/${fileName}`;
-
       try {
+        const uploadResult = await uploadToCloudinary(file);
+
         const report = new FinalReport({
           userId: decoded.id || decoded.userId,
           title,
           description,
-          reportPath: filePath,
+          reportPath: uploadResult.secure_url,
+          reportPublicId: uploadResult.public_id,
         });
 
         await report.save();
+
         return res.status(201).json({ success: true, report });
-      } catch (error) {
-        console.error("Error saving report:", error);
-        return res.status(500).json({ error: "Failed to save report" });
+      } catch (uploadError) {
+        console.error("Cloudinary upload or DB save error:", uploadError);
+        return res
+          .status(500)
+          .json({ error: "Failed to upload and save report" });
       }
     });
+  } else {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 }

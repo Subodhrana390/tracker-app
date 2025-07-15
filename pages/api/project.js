@@ -1,11 +1,17 @@
 import formidable from "formidable";
-import fs from "fs/promises";
-import path from "path";
 import jwt from "jsonwebtoken";
 import connectDB from "@/lib/mongodb";
 import Project from "@/models/Project";
+import { v2 as cloudinary } from "cloudinary";
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export const config = {
   api: {
@@ -24,6 +30,21 @@ async function verifyToken(req) {
   }
   const decoded = jwt.verify(token, JWT_SECRET);
   return decoded.id;
+}
+
+async function uploadToCloudinary(file) {
+  return await cloudinary.uploader.upload(file.filepath || file.path, {
+    resource_type: "raw", // for PDFs use "raw"
+    folder: "projects/reports",
+  });
+}
+
+async function deleteFromCloudinary(publicId) {
+  try {
+    await cloudinary.uploader.destroy(publicId, { resource_type: "raw" });
+  } catch (err) {
+    console.warn("Cloudinary deletion error:", err.message);
+  }
 }
 
 export default async function handler(req, res) {
@@ -58,7 +79,7 @@ export default async function handler(req, res) {
       });
     });
 
-    const id = normalizeField(fields.id); // optional, for update
+    const id = normalizeField(fields.id);
     const title = normalizeField(fields.title);
     const description = normalizeField(fields.description);
     const link = normalizeField(fields.link);
@@ -71,28 +92,21 @@ export default async function handler(req, res) {
         .json({ error: "Title and description are required" });
     }
 
-    let reportPath = null;
-    // If new file is uploaded, save it
+    // Validate PDF
+    if (uploadedFile && uploadedFile.mimetype !== "application/pdf") {
+      return res
+        .status(400)
+        .json({ error: "A valid PDF project report is required" });
+    }
+
+    let reportUrl = null;
+    let reportPublicId = null;
+
     if (uploadedFile) {
-      if (uploadedFile.mimetype !== "application/pdf") {
-        return res
-          .status(400)
-          .json({ error: "A valid PDF project report is required" });
-      }
-
-      const buffer = await fs.readFile(
-        uploadedFile.filepath || uploadedFile.path
-      );
-      const filename = `${Date.now()}-${
-        uploadedFile.originalFilename || uploadedFile.name
-      }`;
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-
-      await fs.mkdir(uploadDir, { recursive: true });
-      const finalPath = path.join(uploadDir, filename);
-      await fs.writeFile(finalPath, buffer);
-
-      reportPath = `/uploads/${filename}`;
+      // Upload PDF to Cloudinary
+      const uploadResult = await uploadToCloudinary(uploadedFile);
+      reportUrl = uploadResult.secure_url;
+      reportPublicId = uploadResult.public_id;
     }
 
     try {
@@ -107,28 +121,20 @@ export default async function handler(req, res) {
         project.description = description;
         project.link = link;
 
-        if (reportPath) {
-          // Delete old file if exists
-          if (project.reportPath) {
-            const oldFilePath = path.join(
-              process.cwd(),
-              "public",
-              project.reportPath
-            );
-            try {
-              await fs.unlink(oldFilePath);
-            } catch (err) {
-              console.warn("Old file deletion error:", err.message);
-            }
+        if (reportUrl) {
+          // Delete old file from Cloudinary if exists
+          if (project.reportPublicId) {
+            await deleteFromCloudinary(project.reportPublicId);
           }
-          project.reportPath = reportPath;
+          project.reportUrl = reportUrl;
+          project.reportPublicId = reportPublicId;
         }
 
         await project.save();
         return res.status(200).json({ project });
       } else {
         // Create new project
-        if (!reportPath) {
+        if (!reportUrl) {
           return res.status(400).json({
             error: "A PDF project report is required for new project",
           });
@@ -139,7 +145,8 @@ export default async function handler(req, res) {
           title,
           description,
           link,
-          reportPath,
+          reportUrl,
+          reportPublicId,
         });
 
         await project.save();
@@ -165,14 +172,9 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Project not found" });
       }
 
-      // Delete file from disk if exists
-      if (project.reportPath) {
-        const filePath = path.join(process.cwd(), "public", project.reportPath);
-        try {
-          await fs.unlink(filePath);
-        } catch (err) {
-          console.warn("File already deleted or not found:", err.message);
-        }
+      // Delete file from Cloudinary if exists
+      if (project.reportPublicId) {
+        await deleteFromCloudinary(project.reportPublicId);
       }
 
       return res.status(200).json({ message: "Project deleted successfully" });

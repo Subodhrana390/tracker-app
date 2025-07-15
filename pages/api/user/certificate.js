@@ -2,17 +2,13 @@ import connectDB from "@/lib/mongodb";
 import Certificate from "@/models/Certificate";
 import jwt from "jsonwebtoken";
 import formidable from "formidable";
-import fs from "fs/promises";
-import path from "path";
+import cloudinary from "@/lib/cloudinary";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 async function verifyToken(req) {
   const token = req.cookies?.token;
-
-  if (!token) {
-    throw new Error("No token provided");
-  }
+  if (!token) throw new Error("No token provided");
 
   try {
     return jwt.verify(token, JWT_SECRET);
@@ -47,7 +43,7 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-      const form = formidable();
+      const form = formidable({ keepExtensions: true });
 
       const { files } = await new Promise((resolve, reject) => {
         form.parse(req, (err, _, files) => {
@@ -64,54 +60,27 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "No certificate file uploaded" });
       }
 
-      const filePath = file.filepath || file.path;
+      const result = await cloudinary.uploader.upload(file.filepath, {
+        folder: "certificates",
+        resource_type: "auto",
+        public_id: `cert-${userId}-${Date.now()}`,
+      });
 
-      if (!filePath) {
-        return res.status(400).json({ error: "Uploaded file path not found" });
-      }
-
-      const buffer = await fs.readFile(filePath);
-      const filename = `${Date.now()}-${file.originalFilename || file.name}`;
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-
-      await fs.mkdir(uploadDir, { recursive: true });
-
-      const finalPath = path.join(uploadDir, filename);
-
-      await fs.writeFile(finalPath, buffer);
-
-      // Check if certificate already exists for this user
       const existingCert = await Certificate.findOne({ userId });
 
       if (existingCert) {
-        // Delete old file if exists
-        if (existingCert.filePath) {
-          try {
-            const oldFilePath = path.join(
-              process.cwd(),
-              "public",
-              existingCert.filePath
-            );
-            await fs.unlink(oldFilePath);
-          } catch (unlinkErr) {
-            console.warn("Failed to delete old certificate file:", unlinkErr);
-          }
-        }
-
-        // Update existing document
-        existingCert.filePath = `/uploads/${filename}`;
+        existingCert.filePath = result.secure_url;
         existingCert.completionDate = new Date();
-        existingCert.course = "Daily Diary Training";
-
+        existingCert.course = "TR-102 Industrial Training";
         await existingCert.save();
 
         return res.status(200).json({ certificate: existingCert });
       }
 
-      // No existing certificate - create new
+      // Create new certificate
       const cert = new Certificate({
         userId,
-        filePath: `/uploads/${filename}`,
+        filePath: result.secure_url,
         course: "Daily Diary Training",
         completionDate: new Date(),
       });
@@ -124,8 +93,7 @@ export default async function handler(req, res) {
     res.setHeader("Allow", ["GET", "POST"]);
     return res.status(405).json({ error: `Method ${req.method} not allowed` });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: error.message || "Internal Server Error" });
+    console.error("Certificate API error:", error);
+    return res.status(500).json({ error: error.message || "Server Error" });
   }
 }

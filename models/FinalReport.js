@@ -15,6 +15,9 @@ const finalReportSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    reportPublicId: {
+      type: String,
+    },
     submittedAt: {
       type: Date,
       default: Date.now,
