@@ -63,17 +63,17 @@ export default function HomePage() {
     { name: "Home", href: "/", icon: <Home className="w-5 h-5" /> },
     {
       name: "Diaries",
-      href: "/dashboard/diaries",
+      href: "/dashboard/dailydiary",
       icon: <NotebookText className="w-5 h-5" />,
     },
     {
       name: "Projects",
-      href: "/dashboard/projects",
+      href: "/dashboard/project",
       icon: <FileBox className="w-5 h-5" />,
     },
     {
       name: "Certificates",
-      href: "/dashboard/certificates",
+      href: "/dashboard/certificate",
       icon: <GraduationCap className="w-5 h-5" />,
     },
   ];
