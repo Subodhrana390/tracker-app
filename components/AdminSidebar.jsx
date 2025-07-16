@@ -27,7 +27,7 @@ const AdminSidebar = ({
     { id: "dashboard/profile", label: "Profile", icon: "👤" },
     { id: "dashboard/certificate", label: "Certificate", icon: "🏆" },
     { id: "dashboard/finalreport", label: "Final Report", icon: "📝" },
-    { id: "dashboard/dailydairy", label: "Daily Dairy", icon: "📅" },
+    { id: "dashboard/dailydiary", label: "Daily Dairy", icon: "📅" },
     { id: "dashboard/project", label: "Project", icon: "📁" },
   ];
 

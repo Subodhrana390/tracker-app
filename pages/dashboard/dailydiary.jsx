@@ -19,10 +19,11 @@ const DayButton = ({ day, currentDay, onClick }) => (
   <button
     type="button"
     onClick={() => onClick(day)}
-    className={`relative w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 ${currentDay === day
-      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110 ring-4 ring-purple-200"
-      : "bg-white/70 backdrop-blur-sm text-gray-700 hover:bg-white hover:shadow-md hover:scale-105 border border-gray-200"
-      }`}
+    className={`relative w-10 h-10 rounded-full text-sm font-medium transition-all duration-200 ${
+      currentDay === day
+        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110 ring-4 ring-purple-200"
+        : "bg-white/70 backdrop-blur-sm text-gray-700 hover:bg-white hover:shadow-md hover:scale-105 border border-gray-200"
+    }`}
   >
     {day}
     {currentDay === day && (
@@ -66,10 +67,11 @@ const SubmitButton = ({ isSubmitting, handleSubmit }) => (
     type="submit"
     onClick={handleSubmit}
     disabled={isSubmitting}
-    className={`w-full py-4 px-6 rounded-xl font-semibold text-white focus:outline-none focus:ring-4 focus:ring-purple-200 transition-all duration-300 ${isSubmitting
-      ? "bg-gray-400 cursor-not-allowed"
-      : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105"
-      }`}
+    className={`w-full py-4 px-6 rounded-xl font-semibold text-white focus:outline-none focus:ring-4 focus:ring-purple-200 transition-all duration-300 ${
+      isSubmitting
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105"
+    }`}
   >
     {isSubmitting ? (
       <span className="flex items-center justify-center gap-3">
@@ -89,7 +91,9 @@ const FormSection = ({ title, children, icon: Icon }) => (
   <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-200/50 space-y-4 hover:shadow-md transition-shadow duration-300">
     <div className="flex items-center gap-2">
       {Icon && <Icon className="w-5 h-5 text-purple-600" />}
-      <label className="block text-sm font-semibold text-gray-800">{title}</label>
+      <label className="block text-sm font-semibold text-gray-800">
+        {title}
+      </label>
     </div>
     {children}
   </div>
@@ -160,7 +164,7 @@ function DiarySection() {
       const res = await axios.post("/api/diary", data, {
         headers: {
           "Content-Type": "multipart/form-data",
-        }
+        },
       });
 
       if (res.status === 200) {
@@ -177,9 +181,11 @@ function DiarySection() {
     }
   };
 
-
   const visibleDays = showAllDays ? 28 : 14;
-  const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  const currentMonth = new Date().toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 p-6">
@@ -300,7 +306,10 @@ function DiarySection() {
 
           {/* Submit Button */}
           <div className="pt-4">
-            <SubmitButton handleSubmit={handleSubmit} isSubmitting={isSubmitting} />
+            <SubmitButton
+              handleSubmit={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
           </div>
         </div>
 
