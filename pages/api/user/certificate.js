@@ -81,7 +81,7 @@ export default async function handler(req, res) {
       const cert = new Certificate({
         userId,
         filePath: result.secure_url,
-        course: "Daily Diary Training",
+        course: "TR-102 Industrial Training",
         completionDate: new Date(),
       });
 

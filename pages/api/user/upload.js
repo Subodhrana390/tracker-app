@@ -2,6 +2,7 @@ import formidable from "formidable";
 import jwt from "jsonwebtoken";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
+import cloudinary from "@/lib/cloudinary";
 
 // Disable body parser
 export const config = {

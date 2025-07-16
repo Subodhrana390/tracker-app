@@ -14,7 +14,7 @@ export const config = {
 
 async function uploadToCloudinary(file) {
   return cloudinary.uploader.upload(file.filepath || file.path, {
-    resource_type: "raw",
+    resource_type: "auto",
     folder: "tracker/final-reports",
   });
 }
@@ -62,6 +62,7 @@ export default async function handler(req, res) {
       const description = Array.isArray(fields.description)
         ? fields.description[0]
         : fields.description || "";
+
       const file = files.report
         ? Array.isArray(files.report)
           ? files.report[0]
@@ -73,17 +74,42 @@ export default async function handler(req, res) {
       }
 
       try {
+        let report = await FinalReport.findOne({ userId: decoded.id });
+
         const uploadResult = await uploadToCloudinary(file);
 
-        const report = new FinalReport({
-          userId: decoded.id || decoded.userId,
-          title,
-          description,
-          reportPath: uploadResult.secure_url,
-          reportPublicId: uploadResult.public_id,
-        });
+        if (report) {
+          // Delete old file from Cloudinary if available
+          if (report.reportPublicId) {
+            try {
+              await cloudinary.uploader.destroy(report.reportPublicId, {
+                resource_type: "raw",
+              });
+            } catch (cloudErr) {
+              console.warn(
+                "Failed to delete old report from Cloudinary:",
+                cloudErr
+              );
+            }
+          }
 
-        await report.save();
+          // Update existing report
+          report.title = title;
+          report.description = description;
+          report.reportPath = uploadResult.secure_url;
+          report.reportPublicId = uploadResult.public_id;
+          await report.save();
+        } else {
+          // Create new report
+          report = new FinalReport({
+            userId: decoded.id,
+            title,
+            description,
+            reportPath: uploadResult.secure_url,
+            reportPublicId: uploadResult.public_id,
+          });
+          await report.save();
+        }
 
         return res.status(201).json({ success: true, report });
       } catch (uploadError) {
@@ -93,7 +119,5 @@ export default async function handler(req, res) {
           .json({ error: "Failed to upload and save report" });
       }
     });
-  } else {
-    return res.status(405).json({ error: "Method not allowed" });
   }
 }
