@@ -3,6 +3,7 @@ import path from "path";
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 import cloudinary from "@/lib/cloudinary";
+import bcrypt from "bcryptjs";
 
 export const config = {
   api: {
