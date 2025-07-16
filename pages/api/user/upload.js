@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(file.filepath, {
-      folder: "tracker",
+      folder: "tracker/profiles",
       public_id: `user-${userData.id}-${Date.now()}`,
     });
 

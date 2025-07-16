@@ -62,7 +62,7 @@ export default async function handler(req, res) {
     const profilePic = files.profilePic?.[0];
     if (profilePic && profilePic.filepath) {
       const result = await cloudinary.uploader.upload(profilePic.filepath, {
-        folder: "tracker",
+        folder: "tracker/profiles",
         public_id: `${Date.now()}_${
           path.parse(profilePic.originalFilename).name
         }`,

@@ -61,7 +61,7 @@ export default async function handler(req, res) {
       }
 
       const result = await cloudinary.uploader.upload(file.filepath, {
-        folder: "certificates",
+        folder: "tracker/certificates",
         resource_type: "auto",
         public_id: `cert-${userId}-${Date.now()}`,
       });
