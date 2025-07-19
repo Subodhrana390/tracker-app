@@ -3,31 +3,39 @@ import AdminSidebar from "./AdminSidebar";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useUser } from "../context/UserContext";
 import { Loader2, Menu, X } from "lucide-react"; // Using Lucide icons
 
 const ModernLayout = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState({});
+  const { user, setUser } = useUser();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    let isMounted = true;
     async function fetchUserProfile() {
       try {
         setLoading(true);
         const res = await axios.get("/api/user/profile");
-        setUser(res.data.user || null);
+        if (isMounted) setUser(res.data.user || null);
       } catch (err) {
-        console.error("Failed to fetch profile:", err);
-        router.replace("/auth/login");
+        if (isMounted) {
+          console.error("Failed to fetch profile:", err);
+          router.replace("/auth/login");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     }
-
-    fetchUserProfile();
-  }, []);
+    if (!user) fetchUserProfile();
+    else setLoading(false);
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setUser, user]);
 
   const handleLogout = () => {
     axios.post("/api/auth/logout");
