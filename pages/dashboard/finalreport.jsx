@@ -124,7 +124,7 @@ const FinalReport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
+    <div className="min-h-screen py-12 px-4">
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-blue-600 text-white px-6 py-6 text-center">
           <FileText className="mx-auto mb-2 h-8 w-8" />

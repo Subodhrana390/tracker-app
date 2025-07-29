@@ -4,7 +4,6 @@ import {
   BookOpenText,
   FileText,
   Award,
-  CalendarDays,
   User,
   ArrowRight,
   ChevronDown,
@@ -21,6 +20,7 @@ import {
   Linkedin,
   Mail,
   Menu,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -79,14 +79,14 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-blue-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <div className="bg-blue-600 p-2 rounded-lg">
+              <div className="bg-gradient-to-r from-pink-500 to-blue-500 p-2 rounded-lg">
                 <BookOpenText className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-800">
@@ -100,7 +100,7 @@ export default function HomePage() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-gray-600 hover:text-blue-600 transition-colors flex items-center gap-1"
+                  className="text-gray-600 hover:text-pink-600 transition-colors flex items-center gap-1"
                 >
                   {link.icon}
                   {link.name}
@@ -112,13 +112,13 @@ export default function HomePage() {
             <div className="hidden md:flex items-center gap-4">
               <Link
                 href="/auth/login"
-                className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors"
+                className="px-4 py-2 text-gray-600 hover:text-pink-600 transition-colors"
               >
                 Sign In
               </Link>
               <Link
                 href="/auth/register"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                className="px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white rounded-lg transition-all"
               >
                 Get Started
               </Link>
@@ -144,7 +144,7 @@ export default function HomePage() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
+                  className="block px-4 py-2 text-gray-600 hover:bg-pink-50 rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {link.icon}
@@ -154,14 +154,14 @@ export default function HomePage() {
               <div className="pt-2 border-t border-gray-200 space-y-2">
                 <Link
                   href="/auth/login"
-                  className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="block px-4 py-2 text-gray-600 hover:bg-pink-50 rounded-lg transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Sign In
                 </Link>
                 <Link
                   href="/auth/register"
-                  className="block px-4 py-2 bg-blue-600 text-white rounded-lg text-center transition-colors"
+                  className="block px-4 py-2 bg-gradient-to-r from-pink-500 to-blue-500 text-white rounded-lg text-center transition-all"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Get Started
@@ -176,7 +176,7 @@ export default function HomePage() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-200 to-blue-200 opacity-20"></div>
           <div className="container mx-auto px-6 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -189,7 +189,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Link
                   href="/auth/register"
-                  className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+                  className="px-8 py-3 bg-gradient-to-r from-pink-500 to-blue-500 hover:from-pink-600 hover:to-blue-600 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2"
                 >
                   <LogIn className="w-5 h-5" />
                   Get Started
@@ -207,7 +207,7 @@ export default function HomePage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-16 bg-white">
+        <section className="py-16 bg-white/50 backdrop-blur-sm">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -225,8 +225,8 @@ export default function HomePage() {
                   key={index}
                   className={`p-6 rounded-xl border transition-all cursor-pointer ${
                     activeFeature === index
-                      ? "border-blue-300 bg-blue-50"
-                      : "border-gray-200 hover:border-blue-200"
+                      ? "border-pink-300 bg-gradient-to-br from-pink-50 to-blue-50 shadow-lg"
+                      : "border-gray-200 hover:border-pink-200 bg-white"
                   }`}
                   onClick={() => setActiveFeature(index)}
                 >
@@ -234,7 +234,7 @@ export default function HomePage() {
                     <div
                       className={`p-3 rounded-lg ${
                         activeFeature === index
-                          ? "bg-blue-100 text-blue-600"
+                          ? "bg-gradient-to-r from-pink-500 to-blue-500 text-white"
                           : "bg-gray-100 text-gray-600"
                       }`}
                     >
@@ -252,7 +252,7 @@ export default function HomePage() {
         </section>
 
         {/* How It Works */}
-        <section className="py-16 bg-gray-50">
+        <section className="py-16 bg-gradient-to-br from-pink-50 to-blue-50">
           <div className="container mx-auto px-6">
             <div className="max-w-4xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -264,9 +264,11 @@ export default function HomePage() {
             </div>
 
             <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold text-xl">1</span>
+              <div className="text-center bg-white p-6 rounded-xl shadow-sm">
+                <div className="w-16 h-16 bg-gradient-to-r from-pink-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-gradient bg-gradient-to-r from-pink-500 to-blue-500 bg-clip-text text-transparent font-bold text-xl">
+                    1
+                  </span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Sign Up
@@ -275,9 +277,11 @@ export default function HomePage() {
                   Create your account in seconds with email verification.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold text-xl">2</span>
+              <div className="text-center bg-white p-6 rounded-xl shadow-sm">
+                <div className="w-16 h-16 bg-gradient-to-r from-pink-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-gradient bg-gradient-to-r from-pink-500 to-blue-500 bg-clip-text text-transparent font-bold text-xl">
+                    2
+                  </span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Start Tracking
@@ -286,9 +290,11 @@ export default function HomePage() {
                   Add projects, create diary entries, and upload documents.
                 </p>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-blue-600 font-bold text-xl">3</span>
+              <div className="text-center bg-white p-6 rounded-xl shadow-sm">
+                <div className="w-16 h-16 bg-gradient-to-r from-pink-100 to-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-gradient bg-gradient-to-r from-pink-500 to-blue-500 bg-clip-text text-transparent font-bold text-xl">
+                    3
+                  </span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Monitor Progress
@@ -302,18 +308,18 @@ export default function HomePage() {
         </section>
 
         {/* Call to Action */}
-        <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <section className="py-20 bg-gradient-to-r from-pink-500 to-blue-500 text-white">
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-3xl font-bold mb-6">
               Ready to Transform Your Workflow?
             </h2>
-            <p className="text-xl mb-8 max-w-2xl mx-auto text-blue-100">
+            <p className="text-xl mb-8 max-w-2xl mx-auto text-pink-100">
               Join hundreds of students and professionals who use Tracker App to
               stay organized.
             </p>
             <Link
               href="/auth/register"
-              className="inline-flex items-center px-8 py-3 bg-white hover:bg-gray-100 text-blue-600 font-medium rounded-lg transition-colors"
+              className="inline-flex items-center px-8 py-3 bg-white hover:bg-gray-100 text-pink-600 font-medium rounded-lg transition-colors"
             >
               Get Started for Free
               <ArrowRight className="ml-2 w-5 h-5" />
@@ -328,7 +334,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
-                <div className="bg-blue-600 p-2 rounded-lg">
+                <div className="bg-gradient-to-r from-pink-500 to-blue-500 p-2 rounded-lg">
                   <BookOpenText className="h-6 w-6 text-white" />
                 </div>
                 <span className="text-xl font-bold text-white">
@@ -342,25 +348,25 @@ export default function HomePage() {
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-pink-400 transition-colors"
                 >
                   <Github className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
                 >
                   <Twitter className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-blue-400 transition-colors"
                 >
                   <Linkedin className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-pink-400 transition-colors"
                 >
                   <Mail className="w-5 h-5" />
                 </a>
@@ -376,7 +382,7 @@ export default function HomePage() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
-                      className="hover:text-white transition-colors flex items-center gap-2"
+                      className="hover:text-pink-400 transition-colors flex items-center gap-2"
                     >
                       {link.icon}
                       {link.name}
@@ -390,22 +396,22 @@ export default function HomePage() {
               <h3 className="text-white font-semibold text-lg mb-4">Legal</h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="#" className="hover:text-pink-400 transition-colors">
                     Terms of Service
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="#" className="hover:text-blue-400 transition-colors">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="#" className="hover:text-pink-400 transition-colors">
                     Cookie Policy
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="#" className="hover:text-blue-400 transition-colors">
                     Contact Us
                   </a>
                 </li>

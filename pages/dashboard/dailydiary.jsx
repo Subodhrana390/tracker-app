@@ -188,7 +188,7 @@ function DiarySection() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

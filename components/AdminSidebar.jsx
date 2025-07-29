@@ -118,10 +118,20 @@ const AdminSidebar = ({
               isCollapsed && !isMobile ? "justify-center" : ""
             }`}
           >
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-white" />
-            </div>
+            {/* Avatar Section */}
+            {user?.profilePic ? (
+              <img
+                src={user.profilePic}
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 text-white" />
+              </div>
+            )}
 
+            {/* User Info (conditionally shown based on collapse state) */}
             {(!isCollapsed || isMobile) && (
               <div className="flex-1">
                 <p className="text-sm font-semibold text-gray-800 truncate">
@@ -132,16 +142,15 @@ const AdminSidebar = ({
             )}
           </div>
 
+          {/* Logout Button */}
           <button
             onClick={() => {
               handleLogout();
               router.push("/auth/login");
             }}
-            className={`
-              w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-sm font-medium
-              ${isCollapsed && !isMobile ? "justify-center" : ""}
-              text-red-600 hover:bg-red-50
-            `}
+            className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all duration-200 text-sm font-medium
+      ${isCollapsed && !isMobile ? "justify-center" : ""}
+      text-red-600 hover:bg-red-50`}
           >
             <LogOutIcon className="w-5 h-5" />
             {(!isCollapsed || isMobile) && <span>Logout</span>}

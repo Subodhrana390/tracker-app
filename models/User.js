@@ -7,6 +7,8 @@ const userSchema = new mongoose.Schema({
   urn: String,
   crn: String,
   profilePic: String,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 export default mongoose.models.User || mongoose.model("User", userSchema);

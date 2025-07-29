@@ -28,7 +28,6 @@ const Login = () => {
           text: "Login successful! Redirecting...",
           type: "success",
         });
-        // Store user data in context
         setUser(res.data.user || { email: form.email });
         router.push("/dashboard");
       } else {
@@ -52,22 +51,36 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>Login | Tracker App</title>
+        <title>Login | DiaryApp</title>
       </Head>
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-md">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg">
           <div className="text-center">
-            <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-              Sign in to Tracker App
-            </h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Or{" "}
-              <a
-                href="/auth/register"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+            <div
+              className="flex justify-center"
+              onClick={() => router.push("/")}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-indigo-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                create a new account
-              </a>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <h1 className="text-4xl font-bold text-gray-800 mt-4">DiaryApp</h1>
+            <h2 className="mt-2 text-xl font-semibold text-gray-600">
+              Your personal journal companion
+            </h2>
+            <p className="mt-2 text-sm text-gray-500">
+              Capture your thoughts, one day at a time
             </p>
           </div>
 
@@ -84,7 +97,6 @@ const Login = () => {
           )}
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <input type="hidden" name="remember" value="true" />
             <div className="rounded-md shadow-sm space-y-4">
               <div>
                 <label
@@ -93,17 +105,30 @@ const Login = () => {
                 >
                   Email address
                 </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Email address"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    className="pl-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Email address"
+                  />
+                </div>
               </div>
               <div>
                 <label
@@ -112,17 +137,33 @@ const Login = () => {
                 >
                   Password
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={form.password}
-                  onChange={handleChange}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    required
+                    value={form.password}
+                    onChange={handleChange}
+                    className="pl-10 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Password"
+                  />
+                </div>
               </div>
             </div>
 
@@ -136,7 +177,7 @@ const Login = () => {
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900"
+                  className="ml-2 block text-sm text-gray-700"
                 >
                   Remember me
                 </label>
@@ -144,7 +185,7 @@ const Login = () => {
 
               <div className="text-sm">
                 <a
-                  href="/forgot-password"
+                  href="/auth/forgot-password"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot your password?
@@ -156,7 +197,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 ${
                   isLoading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
@@ -185,11 +226,35 @@ const Login = () => {
                     Signing in...
                   </>
                 ) : (
-                  "Sign in"
+                  <span className="flex items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Sign in
+                  </span>
                 )}
               </button>
             </div>
           </form>
+
+          <div className="text-center text-sm text-gray-500 mt-4">
+            Don't have an account?{" "}
+            <a
+              href="/auth/register"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Create one
+            </a>
+          </div>
         </div>
       </div>
     </>
