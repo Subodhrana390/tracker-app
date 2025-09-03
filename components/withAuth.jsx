@@ -1,17 +1,29 @@
 import React, { useState, useEffect } from "react";
 import ModernLayout from "./ModernLayout";
+import { useUser } from "../context/UserContext";
+import { useRouter } from "next/router";
 
 const withAuth = (WrappedComponent) => {
   return (props) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(true);
-    const [isLoading, setIsLoading] = useState(false);
+    const { user } = useUser();
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-      setIsLoading(true);
-      setTimeout(() => {
+      const checkAuth = async () => {
+        setIsLoading(true);
+        // Simulate authentication check delay
+        await new Promise((resolve) => setTimeout(resolve, 500));
         setIsLoading(false);
-      }, 1000);
+      };
+      checkAuth();
     }, []);
+
+    useEffect(() => {
+      if (!user && !isLoading) {
+        router.push("/auth/login");
+      }
+    }, [user, isLoading, router]);
 
     if (isLoading) {
       return (
@@ -24,25 +36,8 @@ const withAuth = (WrappedComponent) => {
       );
     }
 
-    if (!isAuthenticated) {
-      return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-100 to-pink-100">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-4">
-              Access Denied
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Please log in to access this page.
-            </p>
-            <button
-              onClick={() => setIsAuthenticated(true)}
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium hover:from-purple-600 hover:to-pink-600 transition-all"
-            >
-              Login
-            </button>
-          </div>
-        </div>
-      );
+    if (!user) {
+      return null;
     }
 
     return (
